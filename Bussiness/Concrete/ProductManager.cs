@@ -1,6 +1,7 @@
 ﻿using Bussiness.Abstract;
 using Bussiness.Constants;
 using Bussiness.DependencyResolvers.ValidationRules.FluentValidation;
+using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
@@ -26,16 +27,12 @@ namespace Bussiness.Concrete
         {
             _productDal = productDal;
         }
+
+        [ValidationAspect(typeof(ProductValidator))]
         public IResult Add(Product product)
         {
             //Business Codes
-            //Validation Code
-            ValidationTool.Validate(new ProductValidator(),product);
-            //Loglama
-            //Cache remove
-            //Performance 
-            //Transaction
-            //Authorizontal
+            
             _productDal.Add(product);
             return new SuccessResult(Messages.ProductAdded);
         }
