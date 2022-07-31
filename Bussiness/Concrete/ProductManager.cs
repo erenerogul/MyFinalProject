@@ -1,12 +1,16 @@
 ﻿using Bussiness.Abstract;
 using Bussiness.Constants;
+using Bussiness.DependencyResolvers.ValidationRules.FluentValidation;
+using Core.CrossCuttingConcerns.Validation;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete.InMemory;
 using Entitites.Concrete;
 using Entitites.DTOs;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,12 +29,13 @@ namespace Bussiness.Concrete
         public IResult Add(Product product)
         {
             //Business Codes
-
-            if(product.ProductName.Length<2)
-            {
-                //Magic Strings
-                return new ErrorResult(Messages.ProductNameInvalid);
-            }
+            //Validation Code
+            ValidationTool.Validate(new ProductValidator(),product);
+            //Loglama
+            //Cache remove
+            //Performance 
+            //Transaction
+            //Authorizontal
             _productDal.Add(product);
             return new SuccessResult(Messages.ProductAdded);
         }
