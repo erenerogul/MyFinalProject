@@ -23,6 +23,6 @@ namespace Bussiness.DependencyResolvers.ValidationRules.FluentValidation
         private bool StartWithA(string arg)
         {
             return arg.StartsWith("A");
-        }
+        }a
     }
 }
