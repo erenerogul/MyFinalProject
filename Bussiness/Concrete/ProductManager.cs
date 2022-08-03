@@ -1,4 +1,5 @@
 ﻿using Bussiness.Abstract;
+using Bussiness.CCS;
 using Bussiness.Constants;
 using Bussiness.DependencyResolvers.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
@@ -27,6 +28,7 @@ namespace Bussiness.Concrete
         {
             _productDal = productDal;
         }
+        //İnterception araya girmek demek metodun başında sonunda hata verdiğinde çalışmak gibi düşünebilirz
 
         [ValidationAspect(typeof(ProductValidator))]
         public IResult Add(Product product)
@@ -34,12 +36,8 @@ namespace Bussiness.Concrete
             //Business Codes
             
             _productDal.Add(product);
-            return new SuccessResult(Messages.ProductAdded);
+             return new SuccessResult(Messages.ProductAdded);
         }
-        //public Product GetById(int productId)
-        //{
-        //    return _productDal.Get(p=>p.ProductId == productId);
-        //}
         public IDataResult<List<Product>> GetAll()
         {
             //İŞ kodları 

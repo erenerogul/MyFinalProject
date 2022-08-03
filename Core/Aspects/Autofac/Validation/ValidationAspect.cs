@@ -12,15 +12,18 @@ namespace Core.Aspects.Autofac.Validation
 {
     public class ValidationAspect : MethodInterception
     {
+        //Validasyon aspecte gelerek Sen bir method interceptionsın ezilmesi gereken metodlardan sen OnBefore metodunu ez diyoruz 
         private Type _validatorType;
+
         public ValidationAspect(Type validatorType)
         {
-            if (!typeof(IValidator).IsAssignableFrom(validatorType))
+            //Defensive coding 
+            if (!typeof(IValidator).IsAssignableFrom(validatorType))//validatorType IValidatordan atanabilir mi ! koyarak atanabilir değilse doğrulama sınıf değil dedirtiyoruz
             {
                 throw new System.Exception("Bu bir doğrulama sınıfı değil");
             }
 
-            _validatorType = validatorType;
+            _validatorType = validatorType;//Eğer öyleyse o zamaan burda validator type atayıp onu OnBefore komutun ezmede kullanuyoruz 
         }
         protected override void OnBefore(IInvocation invocation)
         {

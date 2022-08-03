@@ -12,6 +12,8 @@ namespace Core.CrossCuttingConcerns.Validation
     {
 
         // tekrar 
+        //Burada IValidator bir refereans tutucu ve ProductValidatoru tutuyor yani 
+        //Doğrulanacak olan Kurallar , Doğrulanacak Class 
         public static void Validate(IValidator validator,object entity)
         {
             var context = new ValidationContext<object>(entity);
