@@ -4,6 +4,7 @@ using Bussiness.Constants;
 using Bussiness.DependencyResolvers.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Validation;
 using Core.CrossCuttingConcerns.Validation;
+using Core.Utilities.Business;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete.InMemory;
@@ -23,10 +24,12 @@ namespace Bussiness.Concrete
     {
 
         IProductDal _productDal;
+        ICategoryService _categoryService;
 
-        public ProductManager (IProductDal productDal)
+        public ProductManager (IProductDal productDal,ICategoryService categoryService)
         {
             _productDal = productDal;
+            _categoryService = categoryService;
         }
         //İnterception araya girmek demek metodun başında sonunda hata verdiğinde çalışmak gibi düşünebilirz
 
@@ -34,13 +37,13 @@ namespace Bussiness.Concrete
         public IResult Add(Product product)
         {
             //Business Codes
-            if(CheckIfProductCountCategoryCorrect(product.CategoryId).Success)
+           IResult result = BusinessRules.Run(CheckIfProductNameExists(product.ProductName),CheckIfProductCountCategoryCorrect(product.CategoryId),CheckIfCategoryLimitExceded());
+            if(result!=null)
             {
-                _productDal.Add(product);
-                return new SuccessResult(Messages.ProductAdded);
+                return result;
             }
-            return new ErrorResult();
-             
+            _productDal.Add(product);
+            return new SuccessResult(Messages.ProductAdded);
         }
         public IDataResult<List<Product>> GetAll()
         {
@@ -77,6 +80,15 @@ namespace Bussiness.Concrete
             if(result)
             {
                 return new ErrorResult(Messages.ProductNameAlreadyExists);
+            }
+            return new SuccessResult();
+        }
+        private IResult CheckIfCategoryLimitExceded()
+        {
+            var result = _categoryService.GetAll();
+            if(result.Data.Count >15)
+            {
+                return new ErrorResult(Messages.CategoryLimitExceded);
             }
             return new SuccessResult();
         }
